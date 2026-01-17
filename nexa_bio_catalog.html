@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXA BIO - Catálogo de Peptídeos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1428 0%, #1a3a52 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px solid #00bfff;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #00bfff;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #00bfff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 1.1em;
+        }
+
+        .peptides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .peptide-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #00bfff;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
+        }
+
+        .peptide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.4);
+            border-color: #38bdf8;
+        }
+
+        .peptide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 191, 255, 0.3);
+            padding-bottom: 12px;
+        }
+
+        .peptide-name {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #00bfff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-estoque {
+            background-color: rgba(34, 197, 94, 0.3);
+            color: #86efac;
+            border: 1px solid #22c55e;
+        }
+
+        .status-chegada {
+            background-color: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
+            border: 1px solid #f59e0b;
+        }
+
+        .peptide-info {
+            margin: 15px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #38bdf8;
+        }
+
+        .info-value {
+            color: #e2e8f0;
+            font-size: 1.05em;
+        }
+
+        .price {
+            font-size: 1.4em;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .dosage {
+            color: #a1d8ff;
+            font-size: 1.05em;
+        }
+
+        .description {
+            background-color: rgba(0, 191, 255, 0.1);
+            border-left: 3px solid #00bfff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .description-title {
+            color: #00bfff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .contact-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 3px solid #00bfff;
+        }
+
+        .contact-title {
+            font-size: 1.8em;
+            color: #4ade80;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        .contact-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #00bfff 0%, #38bdf8 100%);
+            color: #0f172a;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+        }
+
+        .contact-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #94a3b8;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .peptides-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 NEXA BIO</h1>
+            <p>CATÁLOGO DE PEPTÍDEOS - QUALIDADE E EXCELÊNCIA</p>
+        </div>
+
+        <div class="peptides-grid">
+            <!-- GH -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">GH</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">240 UI</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 2.000,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Growth Hormone (Hormônio do Crescimento) recombinante. Promove síntese proteica, queimadura de gordura, regeneração tecidual e melhora na composição corporal. Utilizado para otimização de desempenho físico e recuperação muscular.</p>
+                </div>
+            </div>
+
+            <!-- MOTS-C -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">MOTS-C</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">40 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 1.000,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Peptídeo mitocondrial que melhora a função energética celular. Aumenta o metabolismo, melhora a sensibilidade à insulina e promove perda de peso. Também conhecido por seus efeitos na longevidade e saúde metabólica.</p>
+                </div>
+            </div>
+
+            <!-- 5-Amino-1MQ -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">5-Amino-1MQ</span>
+                    <span class="status-badge status-chegada">Chega Final da Semana</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">50 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 900,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Agonista NAD+ que aumenta os níveis de NAD+ celular. Promove aumento metabólico, perda de peso, melhora de energia e potencializa funções mitocondriais. Excelente para otimização metabólica e emagrecimento.</p>
+                </div>
+            </div>
+
+            <!-- SS-31 -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">SS-31</span>
+                    <span class="status-badge status-chegada">Chega Final da Semana</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">50 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 1.000,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Peptídeo mitocondrial que protege as mitocôndrias e melhora sua eficiência energética. Reduz estresse oxidativo, melhora a função cardíaca e recuperação muscular. Importante para longevidade e saúde celular.</p>
+                </div>
+            </div>
+
+            <!-- HGH Frag 15mg -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">HGH Frag</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">15 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 900,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Fragmento do HGH com foco em queimadura de gordura. Altamente efetivo para redução de adiposidade abdominal sem afetar significativamente os níveis de prolactina. Excelente para composição corporal.</p>
+                </div>
+            </div>
+
+            <!-- HGH Frag 5mg -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">HGH Frag</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">5 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 600,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Versão em dosagem reduzida do HGH Frag. Ideal para iniciantes ou para protocolos de microdosagem. Oferece segurança e eficácia em composição corporal com menor impacto sistêmico.</p>
+                </div>
+            </div>
+
+            <!-- Retatrutida 30mg -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">Retatrutida</span>
+                    <span class="status-badge status-chegada">Chega Final da Semana</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">30 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 1.200,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Agonista triplo (GLP-1/GIP/GCG). Promove significativa perda de peso, melhora na sensibilidade à insulina e otimização do perfil metabólico. Um dos peptídeos mais efetivos para emagrecimento e controle glicêmico.</p>
+                </div>
+            </div>
+
+            <!-- Tirzepatida 10mg -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">Tirzepatida</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">10 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 600,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Agonista duplo GLP-1/GIP. Efetivo para perda de peso e controle de diabetes. Dosagem reduzida ideal para iniciantes ou resposta hiper-sensível. Excelente perfil de segurança.</p>
+                </div>
+            </div>
+
+            <!-- Tirzepatida 60mg -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">Tirzepatida</span>
+                    <span class="status-badge status-chegada">Chega Final da Semana</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">60 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 1.200,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Versão em dosagem terapêutica completa da Tirzepatida. Máxima efetividade em perda de peso e controle metabólico. Indicado para protocolos avançados de emagrecimento e otimização sistêmica.</p>
+                </div>
+            </div>
+
+            <!-- NAD+ -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">NAD+</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">1000 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 900,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Nicotinamida Adenina Dinucleotídeo - coenzima essencial para produção de energia celular. Melhora longevidade, função cognitiva, recuperação e energia geral. Fundamental para otimização biológica.</p>
+                </div>
+            </div>
+
+            <!-- Epitalon -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">Epitalon</span>
+                    <span class="status-badge status-chegada">Chega Final da Semana</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">50 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 1.000,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Peptídeo de telômero que promove alongamento telomérico e anti-envelhecimento. Melhora ciclo do sono, sistema imunológico e longevidade. Um dos peptídeos mais estudados para rejuvenescimento.</p>
+                </div>
+            </div>
+
+            <!-- GHK-Cu -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">GHK-Cu</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">50 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 600,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Tripeptídeo de cobre que promove regeneração tecidual, cicatrização, e anti-inflamação. Excelente para saúde de pele, colágeno e reparação de feridas. Potente fator de regeneração.</p>
+                </div>
+            </div>
+
+            <!-- KLOW -->
+            <div class="peptide-card">
+                <div class="peptide-header">
+                    <span class="peptide-name">KLOW</span>
+                    <span class="status-badge status-estoque">Em Estoque</span>
+                </div>
+                <div class="peptide-info">
+                    <div class="info-row">
+                        <span class="info-label">Dosagem:</span>
+                        <span class="info-value dosage">80 mg</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Valor:</span>
+                        <span class="info-value price">R$ 1.000,00</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="description-title">Sobre o Produto</div>
+                    <p>Peptídeo inovador que suporta homeostase e otimização metabólica. Promove regulação de peso, melhora de energia e função cognitiva. Excelente para protocolos de biohacking e longevidade.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <div class="contact-title">🛒 PEÇA JÁ!</div>
+            <a href="https://wa.me/5524999845563" target="_blank" class="contact-button">
+                💬 WhatsApp: (24) 99846-5563
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 NEXA BIO - Catálogo de Peptídeos Premium</p>
+            <p>Informações para fins educacionais e de pesquisa</p>
+        </div>
+    </div>
+</body>
+</html>
